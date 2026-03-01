@@ -1,0 +1,399 @@
+{
+  "schema": "HUB_DOC_MANIFEST_V1",
+  "canon_root": "docs/hub",
+  "canonical_index": "docs/hub/canonical/00__HUB_v4_CANONICAL__INDEX.md",
+  "docs": [
+    {
+      "doc_id": "CANONICAL_INDEX",
+      "title": "HUB v4 Canonical — Index (TOC + rules)",
+      "path": "docs/hub/canonical/00__HUB_v4_CANONICAL__INDEX.md",
+      "tags": ["CORE", "CANON"],
+      "include_by_default": true,
+      "priority": 0
+    },
+    {
+      "doc_id": "SAFE_MODE",
+      "title": "SAFE MODE",
+      "path": "docs/hub/canonical/01__SAFE_MODE.md",
+      "tags": ["CORE", "PATCHING", "VERIFICATION"],
+      "include_by_default": true,
+      "priority": 1
+    },
+    {
+      "doc_id": "TOOL_GOVERNANCE",
+      "title": "Tool Selection Governance",
+      "path": "docs/hub/canonical/02__TOOL_GOVERNANCE.md",
+      "tags": ["CORE", "VSCAI", "EXEC", "POWERSHELL", "LOCAL_AI"],
+      "include_by_default": true,
+      "priority": 2
+    },
+    {
+      "doc_id": "ARCHITECTURE_LAWS",
+      "title": "Architecture Laws (CORE is sacred)",
+      "path": "docs/hub/canonical/03__ARCHITECTURE_LAWS.md",
+      "tags": ["CORE", "ARCHITECTURE"],
+      "include_by_default": true,
+      "priority": 3
+    },
+    {
+      "doc_id": "COPY_SAFETY",
+      "title": "Copy Safety Laws",
+      "path": "docs/hub/canonical/04__COPY_SAFETY.md",
+      "tags": ["CORE", "COPY", "VSCAI", "EXEC", "POWERSHELL"],
+      "include_by_default": true,
+      "priority": 4
+    },
+    {
+      "doc_id": "RUNTIME_TRUTH",
+      "title": "Runtime Truth",
+      "path": "docs/hub/canonical/05__RUNTIME_TRUTH.md",
+      "tags": ["CORE", "RUNTIME_TRUTH", "BACKSTAGE"],
+      "include_by_default": true,
+      "priority": 5
+    },
+    {
+      "doc_id": "CHECKPOINT_SYSTEM",
+      "title": "Checkpoint System",
+      "path": "docs/hub/canonical/06__CHECKPOINT_SYSTEM.md",
+      "tags": ["CORE", "CHECKPOINT", "RUNTIME_TRUTH"],
+      "include_by_default": true,
+      "priority": 6
+    },
+    {
+      "doc_id": "BACKUP_VAULT",
+      "title": "Backup + Vault",
+      "path": "docs/hub/canonical/07__BACKUP_VAULT.md",
+      "tags": ["BACKUP", "VAULT"],
+      "include_by_default": false,
+      "priority": 10
+    },
+    {
+      "doc_id": "RESTORE_ENGINE",
+      "title": "Restore Engine",
+      "path": "docs/hub/canonical/08__RESTORE_ENGINE.md",
+      "tags": ["RESTORE", "RUNTIME_TRUTH", "BACKUP"],
+      "include_by_default": false,
+      "priority": 11
+    },
+    {
+      "doc_id": "NEW_CHAT_START_PROTOCOL",
+      "title": "New Chat Start Protocol",
+      "path": "docs/hub/canonical/09__NEW_CHAT_START_PROTOCOL.md",
+      "tags": ["CORE", "BACKSTAGE", "GENERATOR"],
+      "include_by_default": true,
+      "priority": 7
+    },
+    {
+      "doc_id": "VSCAI_RULES",
+      "title": "VSCAI Rules",
+      "path": "docs/hub/canonical/10__VSCAI_RULES.md",
+      "tags": ["VSCAI", "CORE"],
+      "include_by_default": true,
+      "priority": 8
+    },
+    {
+      "doc_id": "EXEC_RULES",
+      "title": "EXEC Rules",
+      "path": "docs/hub/canonical/11__EXEC_RULES.md",
+      "tags": ["EXEC", "CORE"],
+      "include_by_default": true,
+      "priority": 9
+    },
+    {
+      "doc_id": "POWERSHELL_RULES",
+      "title": "PowerShell Rules",
+      "path": "docs/hub/canonical/12__POWERSHELL_RULES.md",
+      "tags": ["POWERSHELL", "CORE"],
+      "include_by_default": true,
+      "priority": 12
+    },
+    {
+      "doc_id": "WSL_BOUNDARIES",
+      "title": "WSL Boundaries",
+      "path": "docs/hub/canonical/13__WSL_BOUNDARIES.md",
+      "tags": ["WSL", "CORE"],
+      "include_by_default": false,
+      "priority": 20
+    },
+    {
+      "doc_id": "BACKSTAGE_SCOPE_GUARD",
+      "title": "Backstage Scope Guard",
+      "path": "docs/hub/canonical/14__BACKSTAGE_SCOPE_GUARD.md",
+      "tags": ["BACKSTAGE", "SCOPE_GUARD", "CORE"],
+      "include_by_default": true,
+      "priority": 13
+    },
+    {
+      "doc_id": "GN_ENGINE_LAWS",
+      "title": "GN Engine Laws",
+      "path": "docs/hub/canonical/15__GN_ENGINE_LAWS.md",
+      "tags": ["BLENDER", "GN", "CORE"],
+      "include_by_default": false,
+      "priority": 30
+    },
+    {
+      "doc_id": "LOCAL_AI_STACK",
+      "title": "Local AI Stack",
+      "path": "docs/hub/canonical/16__LOCAL_AI_STACK.md",
+      "tags": ["LOCAL_AI", "TOOLS"],
+      "include_by_default": false,
+      "priority": 31
+    },
+    {
+      "doc_id": "OBSERVABILITY_CORE",
+      "title": "Observability Core",
+      "path": "docs/hub/canonical/17__OBSERVABILITY_CORE.md",
+      "tags": ["OBSERVABILITY", "GRAPHVIZ", "RUNTIME_TRUTH"],
+      "include_by_default": false,
+      "priority": 32
+    },
+    {
+      "doc_id": "PATH_GOVERNANCE",
+      "title": "Path Governance",
+      "path": "docs/hub/canonical/18__PATH_GOVERNANCE.md",
+      "tags": ["PATHS", "CORE"],
+      "include_by_default": true,
+      "priority": 14
+    },
+    {
+      "doc_id": "SECURITY_INTEGRITY",
+      "title": "Security + Integrity",
+      "path": "docs/hub/canonical/19__SECURITY_AND_INTEGRITY.md",
+      "tags": ["SECURITY", "INTEGRITY"],
+      "include_by_default": false,
+      "priority": 40
+    },
+    {
+      "doc_id": "CHECKPOINT_PINNED_BASELINES",
+      "title": "Checkpoint Pinned Baselines",
+      "path": "docs/hub/checkpoints/00__PINNED_BASELINES.md",
+      "tags": ["CHECKPOINT", "CURATION", "CORE"],
+      "include_by_default": true,
+      "priority": 41
+    },
+    {
+      "doc_id": "CHECKPOINT_ARCHIVE_POINTER",
+      "title": "Checkpoint Archive Pointer",
+      "path": "docs/hub/checkpoints/01__ARCHIVE_INDEX.md",
+      "tags": ["CHECKPOINT", "ARCHIVE"],
+      "include_by_default": false,
+      "priority": 42
+    },
+    {
+      "doc_id": "CHECKPOINT_PINS_JSON",
+      "title": "Checkpoint Pins Data",
+      "path": "docs/hub/checkpoints/checkpoint_pins.json",
+      "tags": ["CHECKPOINT", "CURATION", "DATA"],
+      "include_by_default": false,
+      "priority": 43
+    },
+    {
+      "doc_id": "RUNBOOK_INDEX",
+      "title": "HUB v4 Runbook Index",
+      "path": "docs/hub/runbook/00__RUNBOOK_INDEX.md",
+      "tags": ["CORE", "RUNBOOK", "CANON"],
+      "include_by_default": true,
+      "priority": 0
+    },
+    {
+      "doc_id": "RUNBOOK_CH_00",
+      "title": "Runbook Chapter 00 Purpose",
+      "path": "docs/hub/runbook/01__CH_00__PURPOSE.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 50
+    },
+    {
+      "doc_id": "RUNBOOK_CH_01",
+      "title": "Runbook Chapter 01 Locked Core Laws",
+      "path": "docs/hub/runbook/02__CH_01__LOCKED_CORE_LAWS.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 51
+    },
+    {
+      "doc_id": "RUNBOOK_CH_02",
+      "title": "Runbook Chapter 02 Dev Environment",
+      "path": "docs/hub/runbook/03__CH_02__DEV_ENVIRONMENT.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 52
+    },
+    {
+      "doc_id": "RUNBOOK_CH_03",
+      "title": "Runbook Chapter 03 Canonical Roots Paths",
+      "path": "docs/hub/runbook/04__CH_03__CANONICAL_ROOTS_PATHS.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 53
+    },
+    {
+      "doc_id": "RUNBOOK_CH_04",
+      "title": "Runbook Chapter 04 Workspace Cleanliness",
+      "path": "docs/hub/runbook/05__CH_04__WORKSPACE_CLEANLINESS.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 54
+    },
+    {
+      "doc_id": "RUNBOOK_CH_05",
+      "title": "Runbook Chapter 05 Product Ecosystem",
+      "path": "docs/hub/runbook/06__CH_05__PRODUCT_ECOSYSTEM.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 55
+    },
+    {
+      "doc_id": "RUNBOOK_CH_06",
+      "title": "Runbook Chapter 06 Tooling Capabilities",
+      "path": "docs/hub/runbook/07__CH_06__TOOLING_CAPABILITIES.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 56
+    },
+    {
+      "doc_id": "RUNBOOK_CH_07",
+      "title": "Runbook Chapter 07 VS Code Control Center",
+      "path": "docs/hub/runbook/08__CH_07__VS_CODE_CONTROL_CENTER.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 57
+    },
+    {
+      "doc_id": "RUNBOOK_CH_08",
+      "title": "Runbook Chapter 08 UI UX Design Law",
+      "path": "docs/hub/runbook/09__CH_08__UI_UX_DESIGN_LAW.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 58
+    },
+    {
+      "doc_id": "RUNBOOK_CH_09",
+      "title": "Runbook Chapter 09 Platform Architecture",
+      "path": "docs/hub/runbook/10__CH_09__PLATFORM_ARCHITECTURE.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 59
+    },
+    {
+      "doc_id": "RUNBOOK_CH_10",
+      "title": "Runbook Chapter 10 Engine Canonical Truths",
+      "path": "docs/hub/runbook/11__CH_10__ENGINE_CANONICAL_TRUTHS.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 60
+    },
+    {
+      "doc_id": "RUNBOOK_CH_11",
+      "title": "Runbook Chapter 11 CAD Dimensions Overlay",
+      "path": "docs/hub/runbook/12__CH_11__CAD_DIMENSIONS_OVERLAY.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 61
+    },
+    {
+      "doc_id": "RUNBOOK_CH_12",
+      "title": "Runbook Chapter 12 Debug Philosophy",
+      "path": "docs/hub/runbook/13__CH_12__DEBUG_PHILOSOPHY.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 62
+    },
+    {
+      "doc_id": "RUNBOOK_CH_13",
+      "title": "Runbook Chapter 13 Workflow Execution Law",
+      "path": "docs/hub/runbook/14__CH_13__WORKFLOW_EXECUTION_LAW.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 63
+    },
+    {
+      "doc_id": "RUNBOOK_CH_14",
+      "title": "Runbook Chapter 14 Definition Of Stable",
+      "path": "docs/hub/runbook/15__CH_14__DEFINITION_OF_STABLE.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 64
+    },
+    {
+      "doc_id": "RUNBOOK_CH_15",
+      "title": "Runbook Chapter 15 Knowledge Buffer Governance",
+      "path": "docs/hub/runbook/16__CH_15__KNOWLEDGE_BUFFER_GOVERNANCE.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 65
+    },
+    {
+      "doc_id": "RUNBOOK_CH_16",
+      "title": "Runbook Chapter 16 New Chat Hygiene",
+      "path": "docs/hub/runbook/17__CH_16__NEW_CHAT_HYGIENE.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 66
+    },
+    {
+      "doc_id": "RUNBOOK_CH_17",
+      "title": "Runbook Chapter 17 Current State Next Action",
+      "path": "docs/hub/runbook/18__CH_17__CURRENT_STATE_NEXT_ACTION.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 67
+    },
+    {
+      "doc_id": "RUNBOOK_CH_18",
+      "title": "Runbook Chapter 18 Local AI Strategy",
+      "path": "docs/hub/runbook/19__CH_18__LOCAL_AI_STRATEGY.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 68
+    },
+    {
+      "doc_id": "RUNBOOK_CH_19",
+      "title": "Runbook Chapter 19 Mini Local Hub Kernel",
+      "path": "docs/hub/runbook/20__CH_19__MINI_LOCAL_HUB_KERNEL.md",
+      "tags": ["RUNBOOK", "CANON"],
+      "include_by_default": false,
+      "priority": 69
+    },
+    {
+      "doc_id": "RUNBOOK_APPENDIX_90",
+      "title": "Runbook Appendix Idea Backlog",
+      "path": "docs/hub/runbook/90__APP__IDEA_BACKLOG.md",
+      "tags": ["RUNBOOK", "APPENDIX"],
+      "include_by_default": false,
+      "priority": 90
+    },
+    {
+      "doc_id": "RUNBOOK_APPENDIX_91",
+      "title": "Runbook Appendix Runtime Fact Log System",
+      "path": "docs/hub/runbook/91__APP__RUNTIME_FACT_LOG_SYSTEM.md",
+      "tags": ["RUNBOOK", "APPENDIX"],
+      "include_by_default": false,
+      "priority": 91
+    },
+    {
+      "doc_id": "RUNBOOK_APPENDIX_92",
+      "title": "Runbook Appendix Runtime Event Push Law",
+      "path": "docs/hub/runbook/92__APP__RUNTIME_EVENT_PUSH_LAW.md",
+      "tags": ["RUNBOOK", "APPENDIX"],
+      "include_by_default": false,
+      "priority": 92
+    },
+    {
+      "doc_id": "RUNBOOK_APPENDIX_93",
+      "title": "Runbook Appendix Runtime Fact Log Index Architecture",
+      "path": "docs/hub/runbook/93__APP__RUNTIME_FACT_LOG_INDEX_ARCHITECTURE.md",
+      "tags": ["RUNBOOK", "APPENDIX"],
+      "include_by_default": false,
+      "priority": 93
+    },
+    {
+      "doc_id": "RUNBOOK_APPENDIX_99",
+      "title": "Runbook Appendix Checkpoints Pointer",
+      "path": "docs/hub/runbook/99__APP__CHECKPOINTS_POINTER.md",
+      "tags": ["RUNBOOK", "APPENDIX"],
+      "include_by_default": false,
+      "priority": 99
+    }
+  ]
+}

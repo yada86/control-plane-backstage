@@ -1,0 +1,4 @@
+
+
+{"type":"CHECKPOINT","system":"CONTROL_PLANE_BACKSTAGE","status":"CATALOG_EMPTY_ROOT_CAUSE_IDENTIFIED","timestamp":"2026-02-28T10:38:28.4151872+01:00","facts":{"root_cause":"app-config.local.yaml uses catalog.locations type:file with targets starting \u0027file:/...\u0027; Backstage prefixes backend CWD =\u003e packages/backend/file:/home/...; file not found; ingest skipped.","evidence_log":"catalog warn: file .../packages/backend/file:/home/danie/... does not exist","symptom":"catalog empty: /api/catalog/locations=[], /api/catalog/entities=[]","backend_cwd":"/home/danie/control_plane/backstage/packages/backend","minimal_fix":"In app-config.local.yaml: replace \u0027target: file:/home/danie/...\u0027 with \u0027target: /home/danie/...\u0027 (no file: scheme) for the two entries."}}
+

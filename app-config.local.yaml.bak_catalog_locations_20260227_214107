@@ -1,0 +1,44 @@
+# Dev-only overrides with env-governed URLs/paths.
+# Kan overstyres ved å sette APP_BASE_URL og BACKEND_BASE_URL i miljøet til backend-prosessen.
+
+app:
+  baseUrl: http://172.21.211.225:3000
+
+backend:
+  auth:
+    dangerouslyDisableDefaultAuthPolicy: true   # DEV ONLY — allow unauthenticated local calls (techdocs verify)
+  baseUrl: http://172.21.211.225:7007
+  cors:
+    origin: http://172.21.211.225:3000
+
+techdocs:
+  publisher:
+    type: local
+    local:
+      publishDirectory: /home/danie/control_plane/backstage/packages/backend/static/docs
+  generator:
+    runIn: local
+
+proxy:
+  endpoints:
+    '/api/runtime':
+      target: 'http://172.21.211.225:7007'
+      changeOrigin: true
+    '/api/backup':
+      target: 'http://172.21.211.225:7007'
+      changeOrigin: true
+
+runtimeTruth:
+  # Use the WSL bridge symlinks (measured to exist)
+  filePath: /home/danie/control_plane/runtime_truth/runtime.jsonl
+  jsonlPath: /home/danie/control_plane/runtime_truth/runtime.jsonl
+  latestPath: /home/danie/control_plane/runtime_truth/runtime.latest.json
+
+
+# === FS SAFE PATCH: ensure techdocs-smoke entity is discoverable in RUN repo ===
+catalog:
+  locations:
+    - type: file
+      target: ./docs/hub/catalog-info.yaml
+    - type: file
+      target: ./packages/backend/components/techdocs-smoke/catalog-info.yaml

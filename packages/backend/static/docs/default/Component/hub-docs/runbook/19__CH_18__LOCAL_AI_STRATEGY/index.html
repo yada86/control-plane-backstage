@@ -1,0 +1,2047 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../18__CH_17__CURRENT_STATE_NEXT_ACTION/">
+      
+      
+        <link rel="next" href="../20__CH_19__MINI_LOCAL_HUB_KERNEL/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>CH18 Local AI Strategy - HUB Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#18-local-ai-model-strategy-auto-router-locked" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="HUB Docs" class="md-header__button md-logo" aria-label="HUB Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            HUB Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CH18 Local AI Strategy
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="HUB Docs" class="md-nav__button md-logo" aria-label="HUB Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    HUB Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HUB Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Runbook (Operational)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Runbook (Operational)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00__RUNBOOK_INDEX/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Runbook Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01__CH_00__PURPOSE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH00 Purpose
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02__CH_01__LOCKED_CORE_LAWS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH01 Locked Core Laws
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03__CH_02__DEV_ENVIRONMENT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH02 Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04__CH_03__CANONICAL_ROOTS_PATHS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH03 Canonical Roots & Paths
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05__CH_04__WORKSPACE_CLEANLINESS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH04 Workspace Cleanliness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06__CH_05__PRODUCT_ECOSYSTEM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH05 Product Ecosystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07__CH_06__TOOLING_CAPABILITIES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH06 Tooling & Capabilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08__CH_07__VS_CODE_CONTROL_CENTER/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH07 VS Code Control Center
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09__CH_08__UI_UX_DESIGN_LAW/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH08 UI/UX Design Law
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10__CH_09__PLATFORM_ARCHITECTURE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH09 Platform Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11__CH_10__ENGINE_CANONICAL_TRUTHS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH10 Engine Canonical Truths
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12__CH_11__CAD_DIMENSIONS_OVERLAY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH11 CAD Dimensions Overlay
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13__CH_12__DEBUG_PHILOSOPHY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH12 Debug Philosophy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14__CH_13__WORKFLOW_EXECUTION_LAW/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH13 Workflow Execution Law
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15__CH_14__DEFINITION_OF_STABLE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH14 Definition of Stable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16__CH_15__KNOWLEDGE_BUFFER_GOVERNANCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH15 Knowledge Buffer Governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17__CH_16__NEW_CHAT_HYGIENE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH16 New Chat Hygiene
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18__CH_17__CURRENT_STATE_NEXT_ACTION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH17 Current State + Next Action
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH18 Local AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH18 Local AI Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#legacy-content-imported-from-monolithic-hub_v4_canonical" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Legacy content (imported from monolithic HUB_v4_CANONICAL)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20__CH_19__MINI_LOCAL_HUB_KERNEL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CH19 Mini Local HUB Kernel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../90__APP__IDEA_BACKLOG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appendix 90 Idea Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../91__APP__RUNTIME_FACT_LOG_SYSTEM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appendix 91 Runtime Fact Log System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../92__APP__RUNTIME_EVENT_PUSH_LAW/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appendix 92 Runtime Event Push Law
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../93__APP__RUNTIME_FACT_LOG_INDEX_ARCHITECTURE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appendix 93 Runtime Fact Log Index Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../99__APP__CHECKPOINTS_POINTER/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appendix 99 Checkpoints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Canonical Library (Stable Laws)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Canonical Library (Stable Laws)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/00__HUB_v4_CANONICAL__INDEX/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Canonical Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/01__SAFE_MODE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SAFE MODE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/02__TOOL_GOVERNANCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tool Governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/03__ARCHITECTURE_LAWS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Laws
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/04__COPY_SAFETY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Copy Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/05__RUNTIME_TRUTH/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Runtime Truth
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/runtime-truth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backstage Runtime Truth Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/06__CHECKPOINT_SYSTEM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Checkpoint System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/07__BACKUP_VAULT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backup Vault
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/08__RESTORE_ENGINE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Restore Engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/09__NEW_CHAT_START_PROTOCOL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    New Chat Start Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/10__VSCAI_RULES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VSCAI Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/11__EXEC_RULES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EXEC Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/12__POWERSHELL_RULES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PowerShell Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/13__WSL_BOUNDARIES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WSL Boundaries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/14__BACKSTAGE_SCOPE_GUARD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backstage Scope Guard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/15__GN_ENGINE_LAWS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GN Engine Laws
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/16__LOCAL_AI_STACK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local AI Stack
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/17__OBSERVABILITY_CORE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/18__PATH_GOVERNANCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Path Governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canonical/19__SECURITY_AND_INTEGRITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security & Integrity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#legacy-content-imported-from-monolithic-hub_v4_canonical" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Legacy content (imported from monolithic HUB_v4_CANONICAL)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="18-local-ai-model-strategy-auto-router-locked">18) LOCAL AI MODEL STRATEGY + AUTO-ROUTER (LOCKED)<a class="headerlink" href="#18-local-ai-model-strategy-auto-router-locked" title="Permanent link">&para;</a></h1>
+<h2 id="legacy-content-imported-from-monolithic-hub_v4_canonical">Legacy content (imported from monolithic HUB_v4_CANONICAL)<a class="headerlink" href="#legacy-content-imported-from-monolithic-hub_v4_canonical" title="Permanent link">&para;</a></h2>
+<h1 id="18-local-ai-model-strategy-auto-router-locked_1">18) LOCAL AI MODEL STRATEGY + AUTO-ROUTER (LOCKED)<a class="headerlink" href="#18-local-ai-model-strategy-auto-router-locked_1" title="Permanent link">&para;</a></h1>
+<p>VERIFIED HARD CONCLUSION (2026-02-18):
+- Repo-wide / “super quality compliance” → qwen2.5-coder:7b-instruct  (alias: deep)
+- Daily driver / workflow blocks → qwen2.5-coder:3b                 (alias: main)
+- Micro tasks / ultra fast snippets → deepseek-coder:1.3b           (alias: fast)</p>
+<p>WHY:
+- “Best” depends on task class. Speed ≠ quality. Compliance matters for repo/HUB work.
+- This mapping is benchmarked with QUALITY GATING and repo-grade tasks.</p>
+<p>ALIASES (OLLAMA):
+- Create local alias models so prompts can reference stable names:
+    - main → qwen2.5-coder:3b
+    - fast → deepseek-coder:1.3b
+    - deep → qwen2.5-coder:7b-instruct</p>
+<p>AUTO-ROUTER (LOCAL):
+- Router script path (canonical):
+    C:\AI_WORK\ai_router.py
+- Router routes prompts to fast/main/deep based on heuristics (repo/HUB keywords =&gt; deep, tiny tasks =&gt; fast, default =&gt; main).
+- PowerShell function ‘ai’ calls ai_router.py (session function; optional to make permanent later).</p>
+<p>USAGE:
+- ai <prompt>               =&gt; auto select model
+- ai deep: <prompt>         =&gt; force deep
+- ai -m fast <prompt>       =&gt; force fast
+- ollama run main|fast|deep  =&gt; manual direct</p>
+<p>ENV DEFAULTS:
+- OLLAMA_URL defaults to <a href="http://127.0.0.1:11434/api/generate">http://127.0.0.1:11434/api/generate</a>
+- OLLAMA_TIMEOUT_SEC recommended 180 for repo-grade tasks</p>
+<p>LOCKED RULE:
+- Repo/HUB edits (governance + compliance) should default to ‘deep’.
+- Routine workflow blocks default to ‘main’.
+- Micro/one-liner/quick transforms default to ‘fast’.</p>
+<p>HARDWARE-AWARE LIMITS (LOCKED)
+- This strategy is bound to the canonical hardware baseline (Section 2: RUNTIME CAPACITY BASELINE — HARDWARE).
+- Current baseline (2026-02-19): RTX 4060 (VRAM ≈ 8 GB), RAM 32 GB, i7-9700K.</p>
+<p>Practical implications:
+- 7B class ("deep") is the quality sweet spot on this rig (stable VRAM fit, best compliance).
+- 3B class ("main") is the speed/workflow sweet spot.
+- 1–2B class ("fast") is for micro tasks / ultra-low latency.
+- 30B+ class models are allowed only as special-case runs (expect heavy offload + slowdowns). Do not treat as daily driver.</p>
+<p>Rule:
+- Never pick a model size that contradicts the hardware baseline. If unsure → measure (nvidia-smi / runtime logs) before changing defaults.</p>
+<p>STATUS:
+This section is canonical and governs all Local AI usage.</p>
+<p>====================================================================
+SUPER JARVIS LOCAL v2 — HUB INGEST + RETRIEVAL ENGINE (GREEN / LOCKED)
+====================================================================</p>
+<p>STATUS: VERIFIED GREEN BASELINE (2026-02-20)
+CHECKPOINT: SUPER_JARVIS_AGENT_GLUE_GREEN__2026-02-20</p>
+<p>PURPOSE:
+Deterministic HUB ingest + retrieval engine with agent-ready context packing.
+Design goal: zero guessing, measurable behavior, dependency-light, stable CLI contracts.</p>
+<p>VERIFIED ENV (GREEN):
+- Repo root: C:\AI_WORK\fs_local_jarvis
+- Python venv: C:\AI_WORK\venv_jarvis\Scripts\python.exe
+- Python: 3.12.10
+- chromadb: 1.5.1
+- Chroma DB path: C:\AI_WORK\fs_local_jarvis\db_chroma
+- HUB source: C:\Users\danie\OneDrive\PROSJEKT SYNK\BLENDER\HUB_v4_CANONICAL.md
+- Package layout: C:\AI_WORK\fs_local_jarvis\src\jarvis_local</p>
+<p>CANONICAL CLIs (DO NOT RENAME):
+- jarvis-ingest-v2.exe
+- jarvis-query.exe
+- jarvis-route.exe
+- jarvis-agent-pack.exe</p>
+<p>INGEST v2 (LOCKED GREEN):
+- Deterministic section-aware parsing: LAWS / STATE / OTHER
+- Deterministic chunk schema with stable chunk_id + doc_id
+- Collections: ALL / LAWS / STATE
+- Idempotent upsert verified
+- --rebuild verified safe</p>
+<p>QUERY (GREEN):
+- jarvis-query supports --json
+- --json prints ONLY valid JSON (machine output); default human output unchanged.</p>
+<p>ROUTER (GREEN):
+- jarvis-route supports --format {PACK,JSON}</p>
+<p>AGENT GLUE (GREEN):
+- jarvis-agent-pack online
+- Purpose: route → retrieval → JSON context → PROMPT or JSON pack
+- Supports:
+    --format {PROMPT,JSON}
+    Pass-through routing args (mode, n-laws, n-state, filters)
+- PROMPT format contract (order is LOCKED):
+    SYSTEM → CONTEXT (JSON) → USER
+====================================================================</p>
+<hr />
+<h2 id="append-2026-02-20-near-duplicate-dedupe-jarvis_dedupe_near_green">APPEND (2026-02-20) — NEAR-DUPLICATE DEDUPE — JARVIS_DEDUPE_NEAR_GREEN<a class="headerlink" href="#append-2026-02-20-near-duplicate-dedupe-jarvis_dedupe_near_green" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Near-duplicate filtering verified GREEN</li>
+<li>Flags:
+    --dedupe-near
+    --dedupe-thresh
+    --dedupe-k</li>
+<li>Deterministic algorithm:
+    - normalize (strip + collapse whitespace + lowercase)
+    - word shingles size K
+    - hash: blake2b(digest_size=8)
+    - overlap: |A∩B| / min(|A|,|B|)
+    - keep-first, drop-later
+    - Deterministic ordering enforced: sort by (section, chunk_id)</li>
+<li>Determinism proof: identical removed-set across runs (stable)</li>
+<li>Baseline effect (verified): 64 → 63 chunks (0 noise, 0 drift)</li>
+<li>Emits exactly one line when enabled:
+    [DEDUPE] enabled=1 k=5 thresh=0.95 before=64 after=63 removed=1</li>
+</ul>
+<hr />
+<hr />
+<h2 id="append-2026-02-20-query-strict-json-jarvis_query_json_green">APPEND (2026-02-20) — QUERY STRICT JSON — JARVIS_QUERY_JSON_GREEN<a class="headerlink" href="#append-2026-02-20-query-strict-json-jarvis_query_json_green" title="Permanent link">&para;</a></h2>
+<ul>
+<li>jarvis-query --json mode verified</li>
+<li>--json prints ONLY valid JSON (machine output)</li>
+<li>JSON parse verified via PowerShell (ConvertFrom-Json)</li>
+<li>Human output unchanged</li>
+</ul>
+<hr />
+<hr />
+<h2 id="append-2026-02-20-agent-glue-jarvis_agent_pack_green">APPEND (2026-02-20) — AGENT GLUE — JARVIS_AGENT_PACK_GREEN<a class="headerlink" href="#append-2026-02-20-agent-glue-jarvis_agent_pack_green" title="Permanent link">&para;</a></h2>
+<ul>
+<li>New CLI online: jarvis-agent-pack / jarvis-agent-pack.exe</li>
+<li>Function (verified): prompt → routing → retrieval → JSON context → agent-ready input</li>
+<li>Modes supported (verified):
+    - PROMPT mode (SYSTEM + CONTEXT + USER)
+    - JSON mode (pipeline/machine)</li>
+<li>Pass-through of routing parameters verified (mode, n-laws, n-state, filters)</li>
+<li>Architecture (non-invasive):
+    - Isolated module: agent_pack.py
+    - Entry point registered via pyproject.toml
+    - No changes to existing ingest/query/router engines at checkpoint time</li>
+<li>PROMPT format contract verified (LOCKED order):
+    SYSTEM → CONTEXT (JSON) → USER</li>
+</ul>
+<hr />
+<hr />
+<h2 id="append-2026-02-20-continue-context-pack-verified-jarvis_continue_context_pack_green">APPEND (2026-02-20) — CONTINUE CONTEXT PACK VERIFIED — JARVIS_CONTINUE_CONTEXT_PACK_GREEN<a class="headerlink" href="#append-2026-02-20-continue-context-pack-verified-jarvis_continue_context_pack_green" title="Permanent link">&para;</a></h2>
+<p>CHECKPOINT: JARVIS_CONTEXT_PACK_IN_CONTINUE_VERIFIED__2026-02-20</p>
+<p>STATUS: VERIFIED (SAFE MODE)</p>
+<p>FACTS (MEASURED):
+- jarvis-agent-pack produces a deterministic SYSTEM + CONTEXT + USER bundle (prompt-ready)
+- CONTEXT can be pasted directly into Continue without additional tooling
+- Local model executes the instruction under SAFE MODE control end-to-end
+- No hallucination observed under this workflow; no context drift during the verified test
+- Result: Local AI is now project-aware via HUB truth, not chat memory</p>
+<p>IMPLICATIONS (ALLOWED, TIED TO FACTS):
+- Decision-making can be constrained by real HUB laws and current state
+- Manual context copy can be automated later (non-blocking)
+- Enables a Daniel-friendly UI layer on top of the same contract
+- Supports scaling the project without governance decay</p>
+<h2 id="unique_marker-jarvis_continue_context_pack_green">UNIQUE_MARKER: JARVIS_CONTINUE_CONTEXT_PACK_GREEN<a class="headerlink" href="#unique_marker-jarvis_continue_context_pack_green" title="Permanent link">&para;</a></h2>
+<p>CHECKPOINT — JARVIS_API_E2E_GREEN__2026-02-20</p>
+<ul>
+<li>Date: 2026-02-20</li>
+<li>Status: E2E GREEN (Jarvis CLI executed successfully via jarvis_api; output returned)</li>
+<li>Verified:
+    - jarvis_api running on 127.0.0.1:8787; /health + /version OK
+    - ask_jarvis.ps1 located at: C:\AI_WORK\fs_local_jarvis\tools\ask_jarvis.ps1
+    - ask_jarvis.ps1 params verified: -Q (mandatory), -Mode (AUTO|LAWS|STATE|BOTH), -Model, -Temperature, -TimeoutSec
+    - Host shell: PowerShell 5.1 (powershell.exe); pwsh (PS7) not installed / not available
+    - Jarvis execution now works end-to-end with exit_code=0 through jarvis_api</li>
+<li>Fixes locked in:
+    - jarvis_runner.py patched: if exit_code=0 and stdout is plain text (non-JSON), treat it as valid output_text (fallback) instead of error</li>
+<li>Current operational template constraint:
+    - jarvis_api still validates JARVIS_CMD_TEMPLATE must include {json} and {mode}
+    - Workaround template used: reads {json} request file, extracts .user_text, maps mode (DEFAULT-&gt;AUTO, STRICT-&gt;LAWS, RAG-&gt;BOTH), calls ask_jarvis.ps1 with -Q</li>
+<li>Known integration gap (next work):
+    - Open WebUI points to <a href="http://127.0.0.1:8787/v1">http://127.0.0.1:8787/v1</a> but jarvis_api does not yet expose OpenAI-compatible adapter endpoints (/v1/models, /v1/chat/completions, /v1/openapi.json alias). Adapter patch planned next.</li>
+<li>Troubleshooting truths (measured):
+    - WinError 10048 = port already in use; resolve via netstat -ano and kill LISTENING PID
+    - $PID is read-only in PowerShell; avoid $pid variable; use $targetPid/$listenPid
+    - Select-String may return single object; force array with @() and use .Length under StrictMode</li>
+</ul>
+<p>CHECKPOINT — JARVIS_API_RUNTIME_CONTRACT_LOCKED__2026-02-20</p>
+<ul>
+<li>Date: 2026-02-20</li>
+<li>Purpose: Lock in runtime truths and time-saving constraints discovered during E2E bring-up.</li>
+<li>Confirmed Jarvis CLI contract:
+    - ask_jarvis.ps1 does NOT accept JSON input files
+    - Mandatory input param is -Q (string)
+    - Mode values accepted: AUTO | LAWS | STATE | BOTH
+    - Optional params available: -Model, -Temperature, -TimeoutSec</li>
+<li>Current jarvis_api limitation:
+    - JARVIS_CMD_TEMPLATE validation requires {json} and {mode} placeholders
+    - Direct {q} placeholder not yet supported (planned future patch)</li>
+</ul>
+<ul>
+<li>Operational workaround template (verified working):<p>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "
+      $p='{json}';
+      $req=Get-Content -LiteralPath $p -Raw | ConvertFrom-Json;
+      $m='{mode}';
+      if($m -eq 'DEFAULT'){ $m='AUTO' }
+      elseif($m -eq 'STRICT'){ $m='LAWS' }
+      elseif($m -eq 'RAG'){ $m='BOTH' };
+      &amp; 'C:\AI_WORK\fs_local_jarvis\tools\ask_jarvis.ps1' -Q $req.user_text -Mode $m -TimeoutSec 120
+  "</p>
+</li>
+</ul>
+<ul>
+<li>Transport-layer fix locked in:
+    - jarvis_runner.py now treats plain-text stdout as valid output_text when exit_code=0
+    - JSON stdout remains supported when present
+    - Non-zero exit_code still produces structured error</li>
+</ul>
+<ul>
+<li>PowerShell StrictMode truths (time savers):
+    - $PID is built-in read-only variable (case-insensitive) → never use $pid for process IDs
+    - Select-String may return a single object → always wrap with @() and use .Length
+    - Do not assume exception.Response exists; log Exception.Message and ErrorDetails.Message
+    - netstat -ano is the authoritative port ownership tool (Get-NetTCPConnection can miss races)</li>
+</ul>
+<ul>
+<li>Port conflict resolution pattern (verified):
+    - netstat -ano | findstr :8787
+    - identify LISTENING PID
+    - Stop-Process -Id <PID> -Force
+    - verify no LISTENING entries remain before restart</li>
+</ul>
+<ul>
+<li>Integration state:
+    - jarvis_api core pipeline is E2E green
+    - Open WebUI currently bypasses governance due to missing OpenAI-compatible adapter
+    - Adapter endpoints planned:
+            /v1/models
+            /v1/chat/completions
+            /v1/openapi.json alias</li>
+</ul>
+<p>====================================================================</p>
+<h2 id="dedupe-consolidation-notes">Dedupe / consolidation notes<a class="headerlink" href="#dedupe-consolidation-notes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Verbatim import. Do not dedupe yet.</li>
+</ul>
+<h2 id="crosslinks">Crosslinks<a class="headerlink" href="#crosslinks" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Runbook Index: <code>00__RUNBOOK_INDEX.md</code></li>
+<li>Local AI Stack (library): <code>../canonical/16__LOCAL_AI_STACK.md</code></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../18__CH_17__CURRENT_STATE_NEXT_ACTION/" class="md-footer__link md-footer__link--prev" aria-label="Previous: CH17 Current State + Next Action">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                CH17 Current State + Next Action
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../20__CH_19__MINI_LOCAL_HUB_KERNEL/" class="md-footer__link md-footer__link--next" aria-label="Next: CH19 Mini Local HUB Kernel">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                CH19 Mini Local HUB Kernel
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.footer", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../search/main.js"></script>
+      
+    
+  </body>
+</html>

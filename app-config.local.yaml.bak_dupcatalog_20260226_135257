@@ -1,0 +1,34 @@
+# Dev-only overrides to expose Backstage UI to Windows via WSL IP.
+# WSL IP (measured): 172.21.211.225
+
+app:
+  baseUrl: http://172.21.211.225:3000
+
+backend:
+  auth:
+#     dangerouslyDisableDefaultAuthPolicy: true   # DISABLED for prod-like auth
+  baseUrl: http://172.21.211.225:7007
+  cors:
+    origin: http://172.21.211.225:3000
+
+techdocs:
+  publisher:
+    type: local
+    local:
+      publishDirectory: /home/danie/control_plane/backstage/packages/backend/static/docs
+  generator:
+    runIn: local
+
+
+# === FS SAFE PATCH: ensure techdocs-smoke entity is discoverable in RUN repo ===
+catalog:
+  locations:
+    - type: file
+      target: /home/danie/control_plane/backstage/packages/backend/components/techdocs-smoke/catalog-info.yaml
+
+
+# --- HUB Docs (local) ---
+catalog:
+  locations:
+    - type: file
+      target: ./docs/hub/catalog-info.yaml

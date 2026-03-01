@@ -1,0 +1,15 @@
+{
+  "txnId": "2026-02-24T06-54-48-069Z_bce66127-0874-437f-8851-e4fd88f9ac0e",
+  "createdAt": "2026-02-24T06:54:48.069Z",
+  "cwd": "/home/danie/control_plane/backstage/packages/backend",
+  "ops": [
+    {
+      "absPath": "/home/danie/control_plane/HUB_TEST/_TEST/restore_engine_smoke.txt",
+      "stagePath": "/home/danie/control_plane/backstage/packages/backend/.fs_runtime_restore_txn/stage/2026-02-24T06-54-48-069Z_bce66127-0874-437f-8851-e4fd88f9ac0e/__home__danie__control_plane__HUB_TEST___TEST__restore_engine_smoke.txt",
+      "backupPath": null,
+      "existed": false,
+      "bytes": 102
+    }
+  ],
+  "status": "COMMITTED"
+}

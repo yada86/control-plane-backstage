@@ -1,0 +1,46 @@
+{
+  "schema": "HUB_CHECKPOINT_PINS_V1",
+  "policy": {
+    "raw_history_is_sacred": true,
+    "presentation_only": true,
+    "max_pinned_to_show": 5,
+    "max_recent_relevant_to_show": 10
+  },
+  "subsystems": [
+    {
+      "subsystem_id": "BACKSTAGE",
+      "tags": ["BACKSTAGE", "RUNTIME_TRUTH", "GENERATOR"],
+      "pins": []
+    },
+    {
+      "subsystem_id": "BACKUP",
+      "tags": ["BACKUP", "VAULT"],
+      "pins": []
+    },
+    {
+      "subsystem_id": "RESTORE_ENGINE",
+      "tags": ["RESTORE", "RUNTIME_TRUTH"],
+      "pins": []
+    },
+    {
+      "subsystem_id": "OBSERVABILITY",
+      "tags": ["OBSERVABILITY", "GRAPHVIZ"],
+      "pins": [
+        {
+          "ts": "2026-02-16",
+          "project": "control_plane",
+          "task_id": "GRAPHVIZ_BASELINE_RENDERER_LOCKED",
+          "summary_hint": "Graphviz Baseline Renderer v0.1 LOCKED (baseline addon verified end-to-end)",
+          "why": "Foundation for all future observability overlays; show whenever Graphviz/Observability work resumes."
+        },
+        {
+          "ts": "2026-02-16",
+          "project": "control_plane",
+          "task_id": "GRAPHVIZ_SNAPSHOT_DIR_PER_RENDER",
+          "summary_hint": "Graphviz renderer creates new snapshot directory per render",
+          "why": "Prevents snapshot reuse; critical for traceability and render history."
+        }
+      ]
+    }
+  ]
+}

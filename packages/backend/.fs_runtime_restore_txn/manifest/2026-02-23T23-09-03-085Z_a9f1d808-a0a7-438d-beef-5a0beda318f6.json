@@ -1,0 +1,19 @@
+{
+  "txnId": "2026-02-23T23-09-03-085Z_a9f1d808-a0a7-438d-beef-5a0beda318f6",
+  "createdAt": "2026-02-23T23:09:03.085Z",
+  "cwd": "/home/danie/control_plane/backstage/packages/backend",
+  "ops": [
+    {
+      "absPath": "/mnt/c/Users/danie/OneDrive/PROSJEKT SYNK/BLENDER/HUB/_TEST/restore_engine_smoke.txt",
+      "stagePath": "/home/danie/control_plane/backstage/packages/backend/.fs_runtime_restore_txn/stage/2026-02-23T23-09-03-085Z_a9f1d808-a0a7-438d-beef-5a0beda318f6/__mnt__c__Users__danie__OneDrive__PROSJEKT_SYNK__BLENDER__HUB___TEST__restore_engine_smoke.txt",
+      "backupPath": null,
+      "existed": false,
+      "bytes": 102
+    }
+  ],
+  "status": "ROLLED_BACK",
+  "error": {
+    "message": "ENOENT: no such file or directory, mkdir '/mnt/c/Users/danie/OneDrive/PROSJEKT SYNK/BLENDER/HUB/_TEST'",
+    "stack": "Error: ENOENT: no such file or directory, mkdir '/mnt/c/Users/danie/OneDrive/PROSJEKT SYNK/BLENDER/HUB/_TEST'\n    at async Object.mkdir (node:internal/fs/promises:855:10)\n    at async ensureDir (/home/danie/control_plane/backstage/packages/backend/src/plugins/runtime/restoreTransaction.ts:47:3)\n    at async withRestoreTransaction (/home/danie/control_plane/backstage/packages/backend/src/plugins/runtime/restoreTransaction.ts:194:7)\n    at async applyRestoreTransactional (/home/danie/control_plane/backstage/packages/backend/src/plugins/runtime_restore_engine.ts:328:15)\n    at async <anonymous> (/home/danie/control_plane/backstage/packages/backend/src/plugins/runtime.ts:680:24)"
+  }
+}

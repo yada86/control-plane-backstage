@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Build+publish for ALL TechDocs-enabled entities in catalog.
+# Source of truth: /api/catalog/entities
+# Filter: metadata.annotations["backstage.io/techdocs-ref"] exists
+
+log(){ printf "%s\n" "$*"; }
+die(){ printf "[FATAL] %s\n" "$*" >&2; exit 1; }
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+REPO_ROOT="${FS_REPO_ROOT:-$(cd -- "$SCRIPT_DIR/.." && pwd -P)}"
+ONE="${FS_ONE_SCRIPT:-$REPO_ROOT/scripts/fs_techdocs_build_publish.sh}"
+
+BACKEND="${FS_BACKEND:-http://localhost:7007}"
+NS_FILTER="${FS_NS_FILTER:-}"     # optional: only this namespace
+KIND_FILTER="${FS_KIND_FILTER:-}" # optional: only this kind (e.g. Component)
+NAME_FILTER="${FS_NAME_FILTER:-}" # optional: substring match
+
+need(){ command -v "$1" >/dev/null 2>&1 || die "Missing: $1"; }
+need curl
+need python3
+
+[ -x "$ONE" ] || die "Missing or not executable ONE script: $ONE"
+
+usage(){
+  cat <<USAGE
+Usage:
+  $(basename "$0") [--dry-run] [--limit N]
+
+Options:
+  --dry-run     List entities that would run, but don't build/publish
+  --limit N     Only run first N entities after filtering (for smoke tests)
+
+Env filters:
+  FS_NS_FILTER=default
+  FS_KIND_FILTER=Component
+  FS_NAME_FILTER=smoke
+
+Notes:
+  - Calls ONE script per entity:
+      $ONE --entity <ns> <kind> <name>
+  - ONE script handles generate->publish->verify.
+USAGE
+}
+
+DRY=0
+LIMIT=0
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --dry-run) DRY=1; shift ;;
+    --limit) LIMIT="${2:-0}"; shift 2 ;;
+    -h|--help) usage; exit 0 ;;
+    *) die "Unknown arg: $1" ;;
+  esac
+done
+
+log "=== FS TECHDOCS ALL: CATALOG QUERY ==="
+log "[TIME] $(date -Iseconds)"
+log "[BACKEND] $BACKEND"
+log "[ONE] $ONE"
+log "[FILTER] ns='${NS_FILTER:-*}' kind='${KIND_FILTER:-*}' name~'${NAME_FILTER:-*}'"
+log ""
+
+TMP="$(mktemp)"
+trap 'rm -f "$TMP" >/dev/null 2>&1 || true' EXIT
+
+# Pull all entities; reduce fields not needed not supported everywhere, so keep simple.
+HTTP="$(curl -sS -o "$TMP" -w "%{http_code}" "$BACKEND/api/catalog/entities" || true)"
+[ "$HTTP" = "200" ] || die "Catalog entities query failed: HTTP $HTTP"
+
+# Extract list of (namespace, kind, name) for entities with techdocs annotation.
+python3 - <<'PY' "$TMP" "$NS_FILTER" "$KIND_FILTER" "$NAME_FILTER"
+import json,sys
+path=sys.argv[1]
+nsf=sys.argv[2].strip()
+kf=sys.argv[3].strip()
+nf=sys.argv[4].strip().lower()
+
+data=json.load(open(path,'r',encoding='utf-8'))
+out=[]
+for e in data:
+  md=e.get("metadata") or {}
+  ann=md.get("annotations") or {}
+  if "backstage.io/techdocs-ref" not in ann: 
+    continue
+  name=(md.get("name") or "").strip()
+  ns=(md.get("namespace") or "default").strip()
+  kind=(e.get("kind") or "").strip()
+  if nsf and ns != nsf: 
+    continue
+  if kf and kind != kf:
+    continue
+  if nf and nf not in name.lower():
+    continue
+  if not name or not kind:
+    continue
+  out.append((ns,kind,name))
+
+# stable ordering
+out.sort(key=lambda t:(t[0],t[1],t[2]))
+for ns,kind,name in out:
+  print(f"{ns}\t{kind}\t{name}")
+PY > "${TMP}.list"
+
+COUNT="$(wc -l < "${TMP}.list" | awk '{print $1}')"
+log "[FOUND] $COUNT techdocs-enabled entities"
+if [ "$COUNT" -eq 0 ]; then
+  log "[DONE] Nothing to do."
+  exit 0
+fi
+
+if [ "$DRY" -eq 1 ]; then
+  log ""
+  log "=== DRY RUN LIST ==="
+  cat "${TMP}.list"
+  exit 0
+fi
+
+log ""
+log "=== RUN ==="
+
+i=0
+fail=0
+while IFS=$'\t' read -r ns kind name; do
+  i=$((i+1))
+  if [ "$LIMIT" -gt 0 ] && [ "$i" -gt "$LIMIT" ]; then
+    log "[LIMIT] Stopping at $LIMIT"
+    break
+  fi
+
+  # Backstage catalog kinds are typically capitalized (Component). ONE script expects kind path segment in URL;
+  # earlier we used "component" in URLs, but catalog uses "Component". We'll pass lowercased for URL safety.
+  kind_lc="$(printf "%s" "$kind" | tr '[:upper:]' '[:lower:]')"
+
+  log ""
+  log "----- [$i/$COUNT] $ns/$kind_lc/$name -----"
+  if "$ONE" --entity "$ns" "$kind_lc" "$name"; then
+    log "[OK] $ns/$kind_lc/$name"
+  else
+    log "[FAIL] $ns/$kind_lc/$name"
+    fail=$((fail+1))
+  fi
+done < "${TMP}.list"
+
+log ""
+if [ "$fail" -eq 0 ]; then
+  log "=== DONE: ALL OK ==="
+else
+  log "=== DONE: FAILURES=$fail (see logs above) ==="
+  exit 3
+fi

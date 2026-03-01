@@ -1,0 +1,26 @@
+import {
+  ScmIntegrationsApi,
+  scmIntegrationsApiRef,
+  ScmAuth,
+} from '@backstage/integration-react';
+import {
+  AnyApiFactory,
+  configApiRef,
+  createApiFactory,
+  discoveryApiRef,
+} from '@backstage/core-plugin-api';
+import { UrlPatternDiscovery } from '@backstage/core-app-api';
+
+export const apis: AnyApiFactory[] = [
+  createApiFactory({
+    api: discoveryApiRef,
+    deps: { configApi: configApiRef },
+    factory: ({ configApi }) => UrlPatternDiscovery.fromConfig(configApi),
+  }),
+  createApiFactory({
+    api: scmIntegrationsApiRef,
+    deps: { configApi: configApiRef },
+    factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
+  }),
+  ScmAuth.createDefaultApiFactory(),
+];

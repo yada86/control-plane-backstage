@@ -1,0 +1,21 @@
+
+site_name: HUB Docs
+docs_dir: ./hub/content
+nav:
+  - Home: index.md
+  - HUB Rulebook: HUB_RULEBOOK.md
+  - HUB State: HUB_STATE.md
+  - Runtime Truth: runtime-truth.md
+  - HUB Docs:
+      - Overview: docs/index.md
+      - Systems: docs/hub-systems.md
+  - Canonical:
+      - Canonical Index: canonical/00__HUB_v4_CANONICAL__INDEX.md
+  - Runbook:
+      - Runbook Index: runbook/00__RUNBOOK_INDEX.md
+plugins:
+  - techdocs-core
+validation:
+  nav:
+    omitted_files: ignore
+

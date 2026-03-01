@@ -1,0 +1,14 @@
+# Dev-only overrides to expose Backstage UI to Windows via WSL IP.
+# WSL IP (measured): 172.21.211.225
+
+app:
+  baseUrl: http://172.21.211.225:3000
+
+backend:
+  baseUrl: http://172.21.211.225:7007
+  cors:
+    origin: http://172.21.211.225:3000
+
+techdocs:
+  generator:
+    runIn: local

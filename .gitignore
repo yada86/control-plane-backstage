@@ -62,3 +62,6 @@ Thumbs.db
 # WSL / misc
 __pycache__/
 *.pyc
+
+# backup artifacts
+*.bak_*

@@ -33,6 +33,16 @@ docs/site/
 docs/.cache/
 docs/.site/
 
+# --- Generated artifacts (local TechDocs publish / build outputs) ---
+packages/backend/static/docs/
+docs/hub/_build/
+.continue/
+
+# --- Optional: compressed / index outputs (covered by static/docs/ but kept explicit) ---
+**/sitemap.xml.gz
+**/search_index.json
+**/techdocs_metadata.json
+
 # runtime-ish / local state
 tmp/
 temp/

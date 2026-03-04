@@ -29,6 +29,19 @@ Runtime truth (Windows)
 TechDocs publish directory
 - ${TECHDOCS_PUBLISH_DIR}
 
+### Generated artifacts policy (git)
+
+Local TechDocs publishing produces generated files under:
+
+- `packages/backend/static/docs/` (published TechDocs output)
+- `docs/hub/_build/` (local build artifacts / superdocs)
+- `.continue/` (local tool state)
+
+Policy:
+- These paths are **generated artifacts** and must not be committed in normal source commits.
+- Source-of-truth lives under `docs/hub/content/**` and code under `packages/**`.
+- If we ever choose to version published docs output, it must be done as a separate explicit “publish” commit with its own documented workflow.
+
 Vault
 - F:\HUB_VAULT
 

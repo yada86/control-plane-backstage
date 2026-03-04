@@ -55,6 +55,91 @@ const HUB_DOC_WHITELIST = [
   'HUB_v4_CANONICAL.md',
 ] as const;
 
+type FsRunbookLink = {
+  title: string;
+  path: string;
+  keywords: string[];
+};
+
+const FS_RUNBOOK_TIER01_ALLOWLIST: FsRunbookLink[] = [
+  {
+    title: 'Baseline v1 verifier',
+    path: '../docs/hub/content/runbook/baseline_v1_verifier.md',
+    keywords: ['baseline', 'verifier', 'green', 'audit', 'healthcheck', 'hub-docs'],
+  },
+  {
+    title: 'New Chat Start generator contract',
+    path: '../docs/hub/content/docs/runtime/new-chat-start-generator/',
+    keywords: ['new-chat-start', 'wrap', 'ssot', 'runtime', 'generator', 'debug', 'wrapkey'],
+  },
+  {
+    title: 'Runtime Truth schema',
+    path: '../runtime-truth.md',
+    keywords: ['runtime', 'jsonl', 'facts', 'schema', 'event', 'checkpoint', 'wrap'],
+  },
+  {
+    title: 'TechDocs flow + publish troubleshooting',
+    path: '../docs/hub/content/runbook/techdocs_flow_troubleshooting/',
+    keywords: ['techdocs', 'mkdocs', 'publish', 'publisher', 'publishdirectory', 'docs', 'hub-docs'],
+  },
+  {
+    title: 'Backend port / EADDRINUSE guard',
+    path: '../docs/hub/content/runbook/backend_port_guard/',
+    keywords: ['eaddrinuse', 'port', '7007', 'backend', 'launcher', 'guard'],
+  },
+  {
+    title: 'Graphviz snapshot renderer',
+    path: '../docs/hub/content/runbook/graphviz_renderer/',
+    keywords: ['graphviz', 'snapshot', 'dot', 'renderer', 'png', 'observability'],
+  },
+  {
+    title: 'SAFE MODE (measure → patch → verify)',
+    path: '../HUB_RULEBOOK.md',
+    keywords: ['safe', 'measure', 'patch', 'verify', 'governance', 'laws'],
+  },
+  {
+    title: 'Runbook Index',
+    path: '../docs/hub/content/runbook/00__RUNBOOK_INDEX.md',
+    keywords: ['runbook', 'index', 'triage', 'recovery', 'patterns'],
+  },
+];
+
+function fsTokenizeTrack(s: string): string[] {
+  return String(s ?? '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .split(/\s+/g)
+    .filter(Boolean)
+    .slice(0, 24);
+}
+
+function fsPickRelevantRunbooks(
+  activeTrackShort: string,
+  max: number,
+): Array<{ title: string; path: string; score: number }> {
+  const toks = fsTokenizeTrack(activeTrackShort);
+  if (!toks.length) return [];
+
+  const scored = FS_RUNBOOK_TIER01_ALLOWLIST.map(l => {
+    const hay = `${l.title} ${l.path} ${l.keywords.join(' ')}`.toLowerCase();
+    const score = toks.reduce((acc, t) => acc + (hay.includes(t) ? 1 : 0), 0);
+    return { title: l.title, path: l.path, score };
+  });
+
+  const picked = scored
+    .filter(x => x.score >= 1)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      const ta = a.title.localeCompare(b.title);
+      if (ta !== 0) return ta;
+      return a.path.localeCompare(b.path);
+    })
+    .slice(0, Math.max(0, max | 0));
+
+  return picked;
+}
+
 function parseRootCandidatesFromEnv(): string[] {
   const raw = String(process.env.FS_HUB_ROOTS ?? '').trim();
   if (!raw) return [];
@@ -646,8 +731,43 @@ export default async function createRouter(options: {
 
       const asStrArr = (v: any) => (Array.isArray(v) ? v.map((x: any) => String(x).trim()).filter(Boolean) : []);
       const next = asStrArr(facts?.next_actions ?? facts?.nextActions ?? facts?.next ?? []);
+        // --- git detection (best-effort, no throw) ---
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const { execSync } = require('node:child_process');
+        const gitRoot = (() => {
+          try {
+            return String(execSync('git rev-parse --show-toplevel', {
+              cwd: process.cwd(),
+              stdio: ['ignore', 'pipe', 'ignore'],
+            }) ?? '').trim();
+          } catch {
+            return '';
+          }
+        })();
+        const gitDetected = Boolean(gitRoot);
+
+        // --- scrub outdated next-actions (only when git already exists) ---
+        const scrubNext = (arr: string[]) => {
+          const rx = /(git\s+init\s+baseline\b|git\s+init\b)/i;
+          return arr
+            .map(x => String(x ?? '').trim())
+            .filter(Boolean)
+            .filter(x => !(gitDetected && rx.test(x)));
+        };
+
+        const nextScrubbed = scrubNext(next);
+
       const issues = asStrArr(facts?.known_issues ?? facts?.knownIssues ?? facts?.issues ?? []);
       const goals = asStrArr(facts?.active_goals ?? facts?.activeGoals ?? []);
+
+        // facts payload (debug only): expose normalized arrays so UI can render NEXT ACTIONS deterministically
+        const factsOut = {
+          ...((facts && typeof facts === 'object') ? facts : {}),
+          next_actions: nextScrubbed,
+          known_issues: issues,
+          active_goals: goals,
+        };
+
 
       const normalizeCompact = (v: any) => String(v ?? '').replace(/\s+/g, ' ').trim();
       const wrapGoal = normalizeCompact(facts?.goal ?? facts?.Goal ?? '');
@@ -660,7 +780,7 @@ export default async function createRouter(options: {
           : 'none';
 
       const wrapNextAction = normalizeCompact(
-        facts?.next_action ?? facts?.nextAction ?? facts?.next ?? next[0] ?? '',
+        facts?.next_action ?? facts?.nextAction ?? facts?.next ?? nextScrubbed[0] ?? '',
       );
       const rawTrack = wrapNextAction || wrapGoal || '';
       const trackSource: 'nextAction' | 'goal' | 'none' = wrapNextAction
@@ -734,6 +854,9 @@ export default async function createRouter(options: {
       const missionShort = missionLines[0] && missionLines[0] !== '—'
         ? missionLines[0]
         : '—';
+      const currentMainTask = goals[0] || '—';
+      const currentNextAction = nextScrubbed[0] || '—';
+      const currentKnownIssue = issues[0] || '—';
 
       const isCheckpoint = (ev: any) => {
         const t = String(ev?.event_type ?? ev?.type ?? '').toUpperCase();
@@ -806,8 +929,7 @@ export default async function createRouter(options: {
       lines.push(`RISK LEVEL: ${gate.gateFound ? (gate.gateOk ? 'LOW' : 'HIGH') : 'MEDIUM'}`);
       lines.push('');
 
-      lines.push('PROJECT NORTH STAR (DO NOT DRIFT)');
-      lines.push('- Deterministic Control Plane');
+      lines.push('NORTH STAR (DO NOT DRIFT)');
       lines.push('- RuntimeTruth is SSOT');
       lines.push('- Append-only history');
       lines.push('- No hidden state');
@@ -815,19 +937,62 @@ export default async function createRouter(options: {
       lines.push('- No architecture expansion without explicit order');
       lines.push('');
 
-      lines.push('CURRENT STRATEGIC PHASE');
-      lines.push(`- ${strategicPhase}`);
+      lines.push('EXECUTION LAW (NON-NEGOTIABLE)');
+      lines.push('- ÉN BLOKK OM GANGEN: Only ONE runnable block per assistant message.');
+      lines.push('- Wait for execution output before issuing the next block. No batching.');
       lines.push('');
 
-      lines.push('ACTIVE TRACK');
-      lines.push(`- ${activeTrackShort}`);
+      lines.push('BLOCK MARKING LAW (NON-NEGOTIABLE)');
+      lines.push('- Every runnable block MUST be preceded (outside the code fence) with:');
+      lines.push('  "LIM RETT INN I → VSCAI_WSL / WSL TERMINAL (EXEC) / POWERSHELL / VSCAI_WIN"');
+      lines.push('- If a runnable block is not clearly marked, it is INVALID output.');
       lines.push('');
 
-      lines.push('CURRENT MISSION');
-      lines.push(`- ${missionShort}`);
+      lines.push('DOC LAW (NON-NEGOTIABLE)');
+      lines.push('- Any new technical behavior (scripts/paths/commands/policies/defaults) MUST be documented');
+      lines.push('  in TechDocs AND indexed in Runbook BEFORE continuing.');
+      lines.push('- If it’s not documented → hidden state → STOP.');
+      lines.push('');
+      lines.push('DOCS-FIRST GATE (HARD)');
+      lines.push('- BEFORE any patch/code: open Runbook Index and confirm canonical page exists for the topic.');
+      lines.push('- Runbook Index: ../docs/hub/content/runbook/00__RUNBOOK_INDEX.md');
+      lines.push('- If missing/not indexed → next action is docs + index (NOT code).');
+      lines.push('- If assistant proposes a patch without a docs-check first → STOP and go to Runbook Index.');
       lines.push('');
 
-      lines.push('### Key Documentation Links (for reference)');
+      lines.push('MEASUREMENT LAW');
+      lines.push('- Vi antar ikke. Vi måler. Inspect before patching.');
+      lines.push('- Default is READ ONLY until an explicit PATCH step is chosen.');
+      lines.push('');
+
+      lines.push('SCOPE / ARCHITECTURE LAW');
+      lines.push('- No new endpoints/services/schemas/expansions without explicit order.');
+      lines.push('- Minimal diffs only. No refactors unless ordered.');
+      lines.push('');
+
+      lines.push('STANDARD WORKFLOW (ALWAYS)');
+      lines.push('- 1) Pick tool explicitly: VSCAI (edit files) / WSL EXEC (measure+run) / PWS (Windows truth) / LOCAL AI (optional).');
+      lines.push('- 2) Measure → Patch → Verify → Wrap.');
+      lines.push('- 3) After any PATCH: verify SSOT loop + docs compliance.');
+      lines.push('');
+      lines.push('BASH/PASTE SAFETY (NON-NEGOTIABLE)');
+      lines.push('- SHORT BLOCK LAW: no pasted EXEC block > ~60 lines. If longer: write to file then run the file.');
+      lines.push('- NO HEREDOC IN CHAT: avoid <<EOF in pasted blocks (paste corruption risk).');
+      lines.push('- NO PIPES INTO PARSERS: always curl > "$TMP" then parse the file (no | python, no | jq).');
+      lines.push('- ALWAYS mktemp + FILE PARSE: TMP="$(mktemp ...)" then read TMP in python/jq.');
+      lines.push('- QUOTE LAW: every $VAR in bash commands must be in double quotes.');
+      lines.push('- ANTI-UNBOUND: define variables immediately before use; never rely on previous blocks.');
+      lines.push('- IF PASTE FAILS: stop and switch to file-based execution; do not brute-force “block 5”.');
+      lines.push('');
+
+      lines.push('SSOT TASK CONTEXT (FROM LATEST WRAP)');
+      lines.push(`- MAIN TASK (GOAL): ${currentMainTask}`);
+      lines.push(`- NEXT ACTION (LAST WRAP): ${currentNextAction}`);
+      lines.push(`- KNOWN ISSUE (LAST WRAP): ${currentKnownIssue}`);
+      lines.push(`- LATEST WRAP (SSOT): ${wrapKey || 'n/a'} | ${wrapTs || 'n/a'}`);
+      lines.push('');
+
+      lines.push('KEY DOC LINKS (CANONICAL)');
       lines.push('- [HUB Rulebook — SAFE MODE + copy rules + governance](../HUB_RULEBOOK.md)');
       lines.push('- [HUB Systems — canonical paths + ports + architecture map](../HUB_SYSTEMS.md)');
       lines.push('- [HUB State — current operational baseline](../HUB_STATE.md)');
@@ -835,66 +1000,63 @@ export default async function createRouter(options: {
       lines.push('- [Runtime Truth — event schema + generator contract](../runtime-truth.md)');
       lines.push('');
 
-      lines.push('LOCKED ENGINE LAWS');
-      lines.push('- Runtime Truth SSOT: newest HUB_SESSION_WRAP__* drives NEXT ACTIONS / KNOWN ISSUES / LATEST WRAP.');
-      lines.push('- Generator contract: no time heuristics for wrap selection; checkpoint cap is fixed by current constant.');
-      lines.push('- SAFE MODE law: Measure → Patch → Verify → Wrap.');
-      lines.push('- Scope law: no new endpoints, no refactor, no architecture expansion without explicit order.');
-      lines.push('');
-
-      lines.push('SYSTEM BLUEPRINT SNAPSHOT');
-      lines.push('- UI: /runtime page in Backstage app');
-      lines.push('- API: /api/runtime/new-chat-start on backend plugin');
-      lines.push('- Data source: runtime events + newest HUB_SESSION_WRAP__* facts');
-      lines.push('- Output contract: JSON { text, meta? } where debug adds meta fields');
-      lines.push('');
-
-      lines.push('SESSION END PROTOCOL — FULL USER MANUAL');
-      lines.push('STEP 1 — PUSH WRAP (WSL terminal only)');
+      lines.push('RUNTIME INSTRUCTIONS (CANONICAL)');
+      lines.push('A) PUSH WRAP (WSL terminal only)');
+      lines.push('- Command (one line per flag, no fancy pipes):');
       lines.push('/home/danie/control_plane/runtime_truth_store/fs_push_session_wrap.sh \\');
       lines.push('  --id "HUB_SESSION_WRAP__<SHORT_NAME>__YYYY-MM-DD" \\');
-      lines.push('  --summary "<1–2 lines: what was achieved>" \\');
-      lines.push('  --known-issue "<current blockers or —>" \\');
+      lines.push('  --summary "<1–2 lines: what changed + what is now true>" \\');
+      lines.push('  --known-issue "<blockers or —>" \\');
       lines.push('  --next-action "<exact next step>" \\');
-      lines.push('  --goal "<the goal of next chat>" \\');
+      lines.push('  --goal "<goal of next chat>" \\');
       lines.push('  --show');
       lines.push('');
-      lines.push('STEP 2 — VERIFY (READ ONLY)');
-      lines.push('curl -sS http://127.0.0.1:7007/api/runtime/new-chat-start?debug=1 | head -c 1200');
-      lines.push('Expect: meta.wrapFound=true and wrapKey points to the wrap you just pushed.');
+      lines.push('B) VERIFY SSOT LOOP (READ ONLY)');
+      lines.push('- Always: fetch to file → parse file (avoid heredoc stdin traps):');
       lines.push('');
-      lines.push('STEP 3 — START NEW CHAT CLEANLY');
-      lines.push('- Click COPY NEW CHAT START and paste directly as-is.');
-      lines.push('- Do not hand-edit generated block unless explicitly ordered.');
+      lines.push("REMINDER: All runnable blocks must be labeled 'LIM RETT INN I → …' or they are INVALID.");
+      lines.push('```bash');
+      lines.push('BASE="http://127.0.0.1:7007"');
+      lines.push('TMP="$(mktemp /tmp/ncs_verify_XXXXXX.json)"');
+      lines.push('curl -sS --max-time 8 "$BASE/api/runtime/new-chat-start?debug=1" > "$TMP"');
+      lines.push('python3 - <<PY');
+      lines.push('import json');
+      lines.push('p = "$TMP"');
+      lines.push('with open(p, "r", encoding="utf-8") as f:');
+      lines.push('    d = json.load(f)');
+      lines.push('m = d.get("meta") or {}');
+      lines.push('print("[OK] meta.wrapFound =", m.get("wrapFound"))');
+      lines.push('print("[OK] meta.wrapKey   =", m.get("wrapKey"))');
+      lines.push('print("[OK] meta.wrapTs    =", m.get("wrapTs"))');
+      lines.push('PY');
+      lines.push('```');
+      lines.push('- Expect: meta.wrapFound=True and meta.wrapKey == the wrap you just pushed.');
       lines.push('');
-      lines.push('STEP 4 — HYGIENE RULES + FAILURE MODES');
-      lines.push('- WSL terminal only for wrap push; not PowerShell.');
-      lines.push('- If stale warning appears, push a newer HUB_SESSION_WRAP__* then copy again.');
-      lines.push('- If backend is down, restore backend health before relying on generated text.');
-      lines.push('- Keep blocks deterministic; no mixed-context manual additions.');
+
+      lines.push('C) HEALTH CHECK (READ ONLY)');
+      lines.push('- Canonical:');
+      lines.push('  /home/danie/control_plane/runtime_truth_store/runtime_health.sh');
+      lines.push('- Shortcut (PATH):');
+      lines.push('  cp_health');
+      lines.push('- Guardian loop (systemd user):');
+      lines.push('  systemctl --user status cp-guardian.timer --no-pager');
+      lines.push('  journalctl --user -u cp-guardian.service -n 80 --no-pager');
       lines.push('');
-      lines.push('Manual rules:');
-      lines.push('- ID MUST start with: HUB_SESSION_WRAP__');
-      lines.push('- If COPY NEW CHAT START looks stale: it usually means NO newer HUB_SESSION_WRAP exists.');
-      lines.push('  Fix = run the push command above.');
+
+      lines.push('D) DOC UPDATE (CANONICAL)');
+      lines.push('- All docs edits happen via VSCAI_WSL (minimal diff).');
+      lines.push('- After docs PATCH, verify:');
+      lines.push('  - file exists at expected path');
+      lines.push('  - Runbook Index contains correct link');
+      lines.push('  - grep shows new keyword(s)');
       lines.push('');
-      lines.push('NEXT ACTIONS (FROM LAST SESSION WRAP)');
-      lines.push(next.length ? next.map(x => `- ${x}`).join('\n') : '- —');
-      lines.push('');
-      lines.push('KNOWN ISSUES (FROM LAST SESSION WRAP)');
-      lines.push(issues.length ? issues.map(x => `- ${x}`).join('\n') : '- —');
-      lines.push('');
-      lines.push('PROJECT MISSION');
-      lines.push(missionLines.length ? missionLines.map(x => `- ${x}`).join('\n') : '- —');
-      lines.push('');
-      lines.push('ACTIVE TRACK');
-      lines.push(trackBulletLines.length ? trackBulletLines.map(x => `- ${x}`).join('\n') : '- —');
-      lines.push('');
-      lines.push('ACTIVE GOALS');
-      lines.push(goals.length ? goals.map(x => `- ${x}`).join('\n') : '- —');
-      lines.push('');
-      lines.push('LATEST WRAP (SSOT)');
-      lines.push(`- ${wrapKey || 'n/a'} | ${wrapTs || 'n/a'}`);
+
+      lines.push('PRIMARY DOCS (DON’T GUESS)');
+      lines.push('- Runbook Index: ../docs/hub/content/runbook/00__RUNBOOK_INDEX.md');
+      lines.push('- Runtime Truth schema/contract: ../runtime-truth.md');
+      lines.push('- NCS generator contract: ../docs/hub/content/docs/runtime/new-chat-start-generator/');
+      lines.push('- Guardian loop runbook: ../docs/hub/content/runbook/runtime_truth/guardian_loop/index.md');
+      lines.push('- Runtime health runbook: ../docs/hub/content/runbook/runtime_truth/runtime_health/index.md');
       lines.push('');
       lines.push('LATEST RELEVANT CHECKPOINTS (MAX 7)');
       lines.push(checkpoints.length ? checkpoints.map(fmtCp).join('\n') : '—');
@@ -907,6 +1069,7 @@ export default async function createRouter(options: {
         text,
         ...(debug
           ? {
+              facts: factsOut,
               meta: {
                 wrapKey,
                 wrapTs,

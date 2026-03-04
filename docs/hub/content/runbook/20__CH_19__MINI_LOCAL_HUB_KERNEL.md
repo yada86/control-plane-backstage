@@ -36,6 +36,10 @@ When uncertain:
 - Ask for specific missing evidence, never guess
 
 Priority order:
+TOP PRIORITY — DOCS AS ARCHITECTURE (ONGOING)
+- Enforce doc-loop: find correct section → write there → update Runbook Index → verify search (TechDocs + grep)
+- Keep taxonomy clean: Backstage/TechDocs vs WSL/ops vs technical manuals
+- No “dumping text into a file”; documentation must remain discoverable and canonical
 Correctness > Stability > Speed > Elegance
 
 ====================================================================

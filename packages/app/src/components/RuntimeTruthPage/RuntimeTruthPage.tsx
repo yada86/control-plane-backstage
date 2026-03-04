@@ -3,6 +3,7 @@ import { Content, Header, Page, Progress, ResponseErrorPanel, Table } from '@bac
 import { useApi, alertApiRef, configApiRef } from '@backstage/core-plugin-api';
 import { Button, Menu, MenuItem } from '@material-ui/core';
 import { copyTextRobustSync } from '../../utils/clipboard';
+import { fsPickRelevantRunbooksFrontend } from './ncs_fallback_allowlist';
 
 type RuntimeEvent = {
   id?: string;
@@ -990,10 +991,12 @@ export const RuntimeTruthPage = () => {
 
   const backendBaseUrl =
     backendBaseUrlRaw === origin ? '' : backendBaseUrlRaw;
+  const isDebug = new URLSearchParams(window.location.search).get('debug') === '1';
   const EVENTS_FETCH_LIMIT = 200;
   const [events, setEvents] = useState<RuntimeEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>(undefined);
+  const [backendDown, setBackendDown] = useState(false);
   const [manualCopyText, setManualCopyText] = useState<string | undefined>(undefined);
   const [newChatStartStale, setNewChatStartStale] = useState<boolean | undefined>(undefined);
   const [newChatStartMeta, setNewChatStartMeta] = useState<Record<string, unknown> | undefined>(undefined);
@@ -1113,7 +1116,7 @@ export const RuntimeTruthPage = () => {
   const handleCopyNewChatStart = async () => {
     try {
       const base = backendBaseUrl.replace(/\/$/, '');
-      const url = `${base}/api/runtime/new-chat-start`;
+      const url = `${base}/api/runtime/new-chat-start${isDebug ? '?debug=1' : ''}`;
       const r = await fetch(url, { headers: { Accept: 'application/json' } });
       if (r.ok) {
         const j = (await r.json()) as RuntimeTextWithMetaResponse;
@@ -1147,12 +1150,78 @@ export const RuntimeTruthPage = () => {
     } catch {
     }
 
-    const txt = buildNewChatStartTextV2
+    const latestWrapEvent = fsPickLatestSessionWrapEvent(events ?? []);
+    const wrapFacts =
+      (latestWrapEvent ? fsRtGetFacts(latestWrapEvent) : null) ??
+      latestWrapEvent?.facts ??
+      {};
+    const activeTrackShort = String(
+      wrapFacts?.next_action ??
+      wrapFacts?.nextAction ??
+      wrapFacts?.next ??
+      wrapFacts?.goal ??
+      wrapFacts?.summary ??
+      latestCheckpoint?.summary ??
+      '',
+    ).trim();
+    const picks = fsPickRelevantRunbooksFrontend(activeTrackShort, 6);
+    const links = picks.length
+      ? picks.map(p => `- [${p.title}](${p.path})`).join('\n')
+      : '- —';
+
+    const fallbackCore = buildNewChatStartTextV2
       ? buildNewChatStartTextV2(events ?? [])
       : buildNewChatStartText(events ?? []);
+    const txt = [
+      '==================== NEW CHAT START — CONTROL_PLANE ====================',
+      'MODE: READ ONLY',
+      'ENGINE MODE: SAFE',
+      'STATUS: BACKEND DOWN (NCS_FALLBACK_V1)',
+      '',
+      'NEXT ACTIONS (RECOVERY)',
+      '- Start backend (7007)',
+      '- curl -sS http://127.0.0.1:7007/healthcheck',
+      '- curl -sS http://127.0.0.1:7007/api/runtime/new-chat-start?debug=1 | head -c 1200',
+      '',
+      'RELEVANT RUNBOOK LINKS (AUTO — Tier 0/1)',
+      links,
+      '',
+      fallbackCore,
+    ].join('\n');
+    setNewChatStartMeta({
+      backendDown: true,
+      fallback: 'NCS_FALLBACK_V1',
+    });
+    setNewChatStartStale(true);
     setNewChatStartSource('fallback');
-    copyPack(txt, 'Copied NEW CHAT START');
+    copyPack(txt, 'Copied NEW CHAT START (backend down fallback)');
   };
+
+  useEffect(() => {
+    if (!isDebug) return;
+    let alive = true;
+
+    const fetchNewChatStartMeta = async () => {
+      try {
+        const base = backendBaseUrl.replace(/\/$/, '');
+        const response = await fetch(`${base}/api/runtime/new-chat-start?debug=1`, {
+          headers: { Accept: 'application/json' },
+        });
+        if (!response.ok) return;
+        const json = (await response.json()) as RuntimeTextWithMetaResponse;
+        if (!alive) return;
+        if (json?.meta && typeof json.meta === 'object') {
+          setNewChatStartMeta(json.meta);
+        }
+      } catch {
+      }
+    };
+
+    void fetchNewChatStartMeta();
+    return () => {
+      alive = false;
+    };
+  }, [backendBaseUrl, isDebug]);
 
   const onCopyResumeFromEndpoint = async () => {
     closeActionsMenu();
@@ -1715,9 +1784,11 @@ export const RuntimeTruthPage = () => {
           lastFpRef.current = fp;
           setEvents(nextEvents);
         }
+        setBackendDown(false);
         setError(undefined);
       } catch (e) {
-        setError(e as Error);
+        setBackendDown(true);
+        setError(undefined);
       } finally {
         if (!silent) setLoading(false);
       }
@@ -1761,6 +1832,11 @@ export const RuntimeTruthPage = () => {
     typeof newChatStartMeta?.wrapFound === 'boolean'
       ? (newChatStartMeta.wrapFound as boolean)
       : Boolean(freshnessWrapKeyRaw);
+  const ncsWrapMismatch = Boolean(
+    newChatStartMeta?.wrapKey &&
+      freshnessWrapKeyRaw &&
+      String(newChatStartMeta.wrapKey) !== String(freshnessWrapKeyRaw),
+  );
 
   return (
     <Page themeId="tool">
@@ -1826,7 +1902,45 @@ export const RuntimeTruthPage = () => {
           {!freshnessWrapFound && (
             <span style={{ color: '#b71c1c', fontWeight: 600 }}>| STALE/NO WRAP</span>
           )}
+          {ncsWrapMismatch && (
+            <span style={{ color: '#b71c1c', fontWeight: 600 }}>| NCS WRAP MISMATCH</span>
+          )}
         </div>
+        {(isDebug || newChatStartMeta) && (
+          <div style={{ marginTop: -4, marginBottom: 12, fontSize: 12, opacity: 0.9 }}>
+            <strong>Debug (SSOT)</strong>
+            {newChatStartMeta ? (
+              <>
+                <div>wrapKey: {String(newChatStartMeta?.wrapKey ?? '—')}</div>
+                <div>wrapTs: {String(newChatStartMeta?.wrapTs ?? '—')}</div>
+                <div>
+                  wrapFound:{' '}
+                  {typeof newChatStartMeta?.wrapFound === 'boolean'
+                    ? String(newChatStartMeta.wrapFound)
+                    : '—'}
+                </div>
+                {isDebug && <div>mismatch: {String(ncsWrapMismatch)}</div>}
+              </>
+            ) : (
+              isDebug && <div>meta not present</div>
+            )}
+          </div>
+        )}
+        {backendDown && (
+          <div
+            style={{
+              marginBottom: 12,
+              padding: '10px 12px',
+              border: '1px solid #f0ad4e',
+              borderRadius: 4,
+              background: '#fff8e1',
+              color: '#8a6d3b',
+              fontSize: 13,
+            }}
+          >
+            Backend down — fallback mode
+          </div>
+        )}
         {manualCopyText && (
           <div
             style={{
@@ -2170,7 +2284,7 @@ export const RuntimeTruthPage = () => {
           </div>
         )}
         {loading && <Progress />}
-        {!loading && error && <ResponseErrorPanel error={error} />}
+        {!loading && !backendDown && error && <ResponseErrorPanel error={error} />}
         {!loading && !error && (
           <Table
             title="Runtime Truth"

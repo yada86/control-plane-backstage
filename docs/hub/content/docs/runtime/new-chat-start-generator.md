@@ -21,6 +21,51 @@ The NEW CHAT START block is the single front door into a new chat session contex
 
 This document defines the contract (what must be true), not implementation trivia.
 
+## 1.1) Operational Header Laws (Injected into NCS)
+
+The NEW CHAT START text block includes immutable operational laws that are injected by the backend generator and must remain visible to operators:
+
+- `EXECUTION LAW (NON-NEGOTIABLE)`
+  - ÉN BLOKK OM GANGEN: only ONE runnable block per assistant message.
+  - Wait for execution output before issuing the next block (no batching).
+- `BLOCK MARKING LAW (NON-NEGOTIABLE)`
+  - Every runnable block must be preceded outside code fences with:
+    `LIM RETT INN I → VSCAI_WSL / WSL TERMINAL (EXEC) / POWERSHELL / VSCAI_WIN`
+  - Unmarked runnable blocks are invalid output.
+- `DOC LAW (NON-NEGOTIABLE)`
+  - New technical behavior (scripts/paths/commands/policies/defaults) must be documented in TechDocs and indexed in Runbook before continuing.
+  - Canonical Runbook Index: ../runbook/00__RUNBOOK_INDEX.md
+- `MEASUREMENT LAW`
+  - Measure first; default to READ ONLY before PATCH.
+- `SCOPE / ARCHITECTURE LAW`
+  - No endpoint/service/schema expansion without explicit order; minimal diffs only.
+
+## BASH/PASTE SAFETY (NON-NEGOTIABLE)
+- SHORT BLOCK LAW: no pasted EXEC block > ~60 lines. If longer: write to file then run the file.
+- NO HEREDOC IN CHAT: avoid <<EOF in pasted blocks (paste corruption risk).
+- NO PIPES INTO PARSERS: always curl > "$TMP" then parse the file (no | python, no | jq).
+- ALWAYS mktemp + FILE PARSE: TMP="$(mktemp ...)" then read TMP in python/jq.
+- QUOTE LAW: every $VAR in bash commands must be in double quotes.
+- ANTI-UNBOUND: define variables immediately before use; never rely on previous blocks.
+- IF PASTE FAILS: stop and switch to file-based execution; do not brute-force “block 5”.
+
+These law headings are part of the runtime contract for `/api/runtime/new-chat-start` output, not optional prose.
+
+## 1.2) SSOT TASK CONTEXT (FROM LATEST WRAP)
+
+The generated NEW CHAT START includes a dedicated section:
+
+- `SSOT TASK CONTEXT (FROM LATEST WRAP)`
+  - `MAIN TASK (GOAL)` derivation: `facts.active_goals[0] || "—"`
+  - `NEXT ACTION (LAST WRAP)` derivation: `facts.next_actions[0] || "—"`
+  - `KNOWN ISSUE (LAST WRAP)` derivation: `facts.known_issues[0] || "—"`
+  - `LATEST WRAP (SSOT)` line: `meta.wrapKey | meta.wrapTs`
+
+Operational rule:
+
+- To change MAIN TASK (GOAL), push a new `HUB_SESSION_WRAP__...` with `--goal` (this populates `active_goals[0]`).
+- To change NEXT ACTION / KNOWN ISSUE, push a new wrap with `--next-action` / `--known-issue`.
+
 ---
 
 ## 2) Source of Truth Chain (SSOT)
@@ -124,15 +169,98 @@ Tool choice: WSL terminal (NOT PowerShell)
   --goal "<goal of next chat>" \
   --show
 
-### 5.2 Verify generator points at your wrap (READ ONLY)
+### 5.2 Verify generator points at your wrap (READ ONLY, robust JSON parse)
 
-curl -sS "http://127.0.0.1:7007/api/runtime/new-chat-start?debug=1" | head -c 1200
+- IKKE bruk `printf ... | python3 - <<'PY'` (heredoc stjeler stdin → JSONDecodeError).
+- Bruk alltid “fetch til fil → parse fil”:
 
-Expected:
-- meta.wrapFound=true
-- wrapKey equals the wrap ID just pushed
+```bash
+BASE="http://127.0.0.1:7007"
+TMP="$(mktemp /tmp/ncs_XXXXXX.json)"
+curl -sS --max-time 6 "$BASE/api/runtime/new-chat-start?debug=1" > "$TMP"
+python3 - <<PY
+import json
+p = "$TMP"
+with open(p, "r", encoding="utf-8") as f:
+  d = json.load(f)
+m = d.get("meta") or {}
+print("[OK] meta.wrapKey   =", m.get("wrapKey"))
+print("[OK] meta.wrapFound =", m.get("wrapFound"))
+print("[OK] meta.wrapTs    =", m.get("wrapTs"))
+PY
+```
+
+Expected: meta.wrapFound=True and meta.wrapKey equals the wrap ID you just pushed.
 
 If not, treat as failure and investigate before ending session.
+
+### 🔒 VERIFICATION RECIPE — DETERMINISTIC WRAP SELECTION (PROVEN 2026-03-03)
+
+This section is normative. It documents the canonical proof that
+`/api/runtime/new-chat-start` selects the newest `HUB_SESSION_WRAP__*`
+deterministically and without cache leakage.
+
+This recipe MUST be followed when validating changes to the generator.
+
+---
+
+#### STEP 1 — NEGATIVE TEST (FORCED NEWER WRAP)
+
+Push a deliberately newer wrap:
+
+/home/danie/control_plane/runtime_truth_store/fs_push_session_wrap.sh \
+  --id "HUB_SESSION_WRAP__NCS_NEGATIVE_TEST__YYYY-MM-DD" \
+  --summary "NEGATIVE TEST: force newer wrap selection" \
+  --known-issue "—" \
+  --next-action "Verify meta.wrapKey equals this ID" \
+  --goal "Prove newest-wrap selection is deterministic" \
+  --show
+
+Then verify:
+
+BASE="http://127.0.0.1:7007"
+TMP="$(mktemp /tmp/ncs_XXXXXX.json)"
+curl -sS --max-time 6 "$BASE/api/runtime/new-chat-start?debug=1" > "$TMP"
+
+python3 - <<PY
+import json
+with open("$TMP","r",encoding="utf-8") as f:
+    d=json.load(f)
+m=d.get("meta") or {}
+print(m.get("wrapKey"), m.get("wrapFound"), m.get("wrapTs"))
+PY
+
+EXPECTED:
+meta.wrapKey == pushed wrap ID
+meta.wrapFound == True
+
+If not, selection is NOT deterministic.
+
+---
+
+#### STEP 2 — COLD-START VERIFICATION (CACHE IMMUNITY)
+
+1. Restart backend.
+2. Hard refresh browser (Ctrl+F5).
+3. Repeat fetch→file→parse verification above.
+
+EXPECTED:
+meta.wrapKey remains the newest wrap.
+HTTP status = 200.
+Backend listening on :7007.
+
+---
+
+#### LOCKED CONCLUSION (2026-03-03)
+
+The generator:
+- Uses newest `HUB_SESSION_WRAP__*`
+- Uses no time heuristics
+- Is immune to warm cache
+- Is immune to cold restart
+
+This procedure is the canonical regression test for NCS wrap selection.
+Do not modify without explicit architectural approval.
 
 ---
 

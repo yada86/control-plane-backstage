@@ -1,0 +1,41 @@
+name: TechDocs (artifact)
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  techdocs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+
+      - name: Install deps
+        run: yarn install --frozen-lockfile
+
+      # Generate TechDocs site as a CI artifact (do NOT commit generated output)
+      - name: Generate TechDocs site
+        env:
+          TECHDOCS_PUBLISH_DIR: site
+        run: |
+          npx --yes @techdocs/cli generate \
+            --source-dir . \
+            --output-dir "$TECHDOCS_PUBLISH_DIR"
+
+      - name: Upload TechDocs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: techdocs-site
+          path: site
+          if-no-files-found: error

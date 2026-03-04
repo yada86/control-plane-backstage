@@ -18,3 +18,6 @@ Policy:
 
 ## Baseline / verification
 - Baseline verifier: [baseline_v1_verifier](baseline_v1_verifier.md)
+
+## Control Plane ops
+- GitHub default branch + TechDocs CI: [GitHub + TechDocs CI](control_plane/github_and_techdocs_ci.md)

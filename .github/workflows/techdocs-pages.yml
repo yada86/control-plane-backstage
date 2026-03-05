@@ -33,7 +33,7 @@ jobs:
         env:
           TECHDOCS_PUBLISH_DIR: site
         run: |
-          npx --yes @techdocs/cli generate --output-dir "$TECHDOCS_PUBLISH_DIR"
+          npx --yes @techdocs/cli generate --base-url /control-plane-backstage/ --output-dir "$TECHDOCS_PUBLISH_DIR"
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

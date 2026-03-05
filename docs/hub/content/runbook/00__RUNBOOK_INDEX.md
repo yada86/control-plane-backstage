@@ -11,6 +11,7 @@ Policy:
 - Runtime truth: [Guardian Loop](runtime_truth/guardian_loop/index.md)
 - Jarvis: [Jarvis Index](jarvis/00__JARVIS_INDEX.md)
 - [Jarvis next — SSOT-native recommendations + approve](./jarvis/jarvis_next_recommendations.md)
+- Internal AI Docs Index (HUB/Runbook): [HUB Docs Index v1](jarvis/hub_docs_index_v1.md)
 
 ## Control Plane contracts
 - NEW CHAT START generator (contract): ../docs/runtime/new-chat-start-generator.md

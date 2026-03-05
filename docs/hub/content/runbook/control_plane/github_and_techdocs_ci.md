@@ -9,6 +9,8 @@ Scope:
 Non-goals:
 - No new services/endpoints. No repo refactors. No hidden state.
 
+See also: [TechDocs GitHub Pages](techdocs_github_pages.md)
+
 ## Preconditions (measure first)
 - Repo exists on GitHub and `main` branch is present.
 - Local docs build works (TechDocs generation works locally) OR is at least understood.

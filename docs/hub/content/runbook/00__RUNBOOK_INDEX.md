@@ -21,3 +21,4 @@ Policy:
 
 ## Control Plane ops
 - GitHub default branch + TechDocs CI: [GitHub + TechDocs CI](control_plane/github_and_techdocs_ci.md)
+- TechDocs på GitHub Pages (Actions deploy, ingen artefakter i git): [TechDocs GitHub Pages](control_plane/techdocs_github_pages.md)
